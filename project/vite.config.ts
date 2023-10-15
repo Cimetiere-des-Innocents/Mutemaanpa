@@ -3,6 +3,8 @@ import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 
+import { resolve } from 'node:path';
+
 // https://vitejs.dev/config/
 export default defineConfig((env) => ({
     plugins: [vue()],
@@ -16,8 +18,8 @@ export default defineConfig((env) => ({
             input:
                 env.mode === 'development'
                     ? {
-                          main: fileURLToPath(new URL('./index.html', import.meta.url)),
-                          preview: fileURLToPath(new URL('./preview/index.html', import.meta.url)),
+                          main: resolve(__dirname, 'index.html'),
+                          preview: resolve(__dirname, 'preview', 'index.html'),
                       }
                     : undefined,
         },
