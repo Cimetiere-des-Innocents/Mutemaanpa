@@ -24,4 +24,7 @@ export default defineConfig((env) => ({
                     : undefined,
         },
     },
+    server: {
+        open: '/preview/index.html',
+    },
 }));
