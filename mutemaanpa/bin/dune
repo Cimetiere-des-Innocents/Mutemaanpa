@@ -1,0 +1,4 @@
+(executable
+ (public_name mutemaanpa)
+ (name main)
+ (libraries mutemaanpa))
