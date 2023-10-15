@@ -5,7 +5,7 @@ import vue from '@vitejs/plugin-vue';
 
 import { resolve } from 'node:path';
 
-import mutemaanpa from './vite-plugin-mutemaanpa/dist';
+import mutemaanpa from './vite-plugin-mutemaanpa';
 
 // https://vitejs.dev/config/
 export default defineConfig((env) => ({

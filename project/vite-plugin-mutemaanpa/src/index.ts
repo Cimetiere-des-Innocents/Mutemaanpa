@@ -4,6 +4,29 @@ import * as fs from 'fs';
 import * as path from 'path';
 import prettier from 'prettier';
 
+function listFiles(path: string): { path: string; isFile: boolean }[] {
+    try {
+        const stat = fs.statSync(path);
+        if (!stat.isDirectory()) {
+            return [];
+        }
+    } catch (e) {
+        return [];
+    }
+
+    const files = fs.readdirSync(path);
+    const result: { path: string; isFile: boolean }[] = [];
+    for (const file of files) {
+        const filePath = path + '/' + file;
+        const stat = fs.statSync(filePath);
+        result.push({
+            path: file,
+            isFile: stat.isFile(),
+        });
+    }
+    return result;
+}
+
 export default function mutemaanpa(root: string): Plugin {
     const app = express();
     app.use(express.json());
@@ -58,9 +81,20 @@ export default function mutemaanpa(root: string): Plugin {
         res.send('ok');
     });
 
+    app.get('/api/list', (req, res) => {
+        const { path: dir } = req.body;
+        if (!dir.startsWith('/')) {
+            res.status(400).send('Invalid directory path');
+            return;
+        }
+
+        const full = publicPath + dir;
+        const files = listFiles(full);
+        res.send(files);
+    });
+
     return {
         name: 'vite-plugin-mutemaanpa',
-        apply: 'serve',
         configureServer: (server) => () => {
             server.httpServer?.on('request', (req, res) => {
                 if (req.url?.startsWith('/api')) {
