@@ -3,6 +3,6 @@
     "husky": "^8.0.0"
   },
   "scripts": {
-    "prepare": "husky install"
+    "prepare": "husky install && cd hooks && npm install && npm run build"
   }
 }
