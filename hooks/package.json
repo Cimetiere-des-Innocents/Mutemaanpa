@@ -1,0 +1,9 @@
+{
+    "dependencies": {
+        "comment-json": "^4.2.3"
+    },
+    "devDependencies": {
+        "prettier": "^3.0.3",
+        "typescript": "^5.2.2"
+    }
+}
