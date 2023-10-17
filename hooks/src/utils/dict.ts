@@ -21,6 +21,16 @@ export async function extractDict() {
         return;
     }
 
+    const dictExists = fs.existsSync(DICT_FILE);
+    if (dictExists) {
+        const settingsStat = fs.statSync(SETTINGS_FILE);
+        const dictStat = fs.statSync(DICT_FILE);
+        if (dictStat.mtimeMs >= settingsStat.mtimeMs) {
+            console.log('dict.json更新于settings.json，跳过提取');
+            return;
+        }
+    }
+
     const settings = parse(fs.readFileSync(SETTINGS_FILE, 'utf-8'));
     if (!settings || !(settings as any)['cSpell.words']) {
         console.log('字典为空，跳过提取');
@@ -41,6 +51,16 @@ export async function applyDict() {
     if (!dictExists) {
         console.log('dict.json不存在，跳过应用');
         return;
+    }
+
+    const settingsExists = fs.existsSync(SETTINGS_FILE);
+    if (dictExists && settingsExists) {
+        const settingsStat = fs.statSync(SETTINGS_FILE);
+        const dictStat = fs.statSync(DICT_FILE);
+        if (dictStat.mtimeMs <= settingsStat.mtimeMs) {
+            console.log('dict.json更新于settings.json，跳过应用');
+            return;
+        }
     }
 
     const dictStr = fs.readFileSync(DICT_FILE, 'utf-8');
