@@ -191,5 +191,6 @@ export class LichGuild<P, O> {
                 await action(eventOwner);
             }
         }
+        return result.type;
     }
 }
