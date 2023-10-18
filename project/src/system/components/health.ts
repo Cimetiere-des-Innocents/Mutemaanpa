@@ -1,76 +1,60 @@
-export class Option<T> {
-    private value: T | null;
+import assert from 'assert';
+import { GameEvent, MessageBus } from '../event';
+import Option from '../utils/option';
 
-    constructor(value?: T) {
-        this.value = value ?? null;
-    }
+export class HealthPoint {
+    health: number = 0;
+    maxHealth: number = 0;
 
-    static some<T>(value: T): Option<T> {
-        return new Option(value);
-    }
-
-    static none<T>(): Option<T> {
-        return new Option();
-    }
-
-    get unwrap(): T {
-        if (this.value === null) {
-            throw new Error('this option is null');
-        }
-        return this.value;
-    }
-
-    get isNone(): boolean {
-        return this.value === null;
-    }
-
-    get isSome(): boolean {
-        return this.value !== null;
-    }
-
-    or_else(value: T): T {
-        return this.value ?? value;
-    }
-
-    map(fn: (value: T) => T): Option<T> {
-        if (this.value === null) {
-            return this;
-        }
-        return new Option(fn(this.value));
-    }
-
-    and_then(fn: (value: T) => Option<T>): Option<T> {
-        if (this.value === null) {
-            return this;
-        }
-        return fn(this.value);
+    constructor(health: number, maxHealth: number) {
+        this.health = health;
+        this.maxHealth = maxHealth;
     }
 }
 
 // `Health` components applies to anything that:
 // - has potential to receive damage and to die.
+//
+// It does not encode business logic.
+// But it do encode one invariant:
+// - 0 <= health <= maxHealth
 export class Health {
-    private _health: Option<number>[];
+    private _health: Option<HealthPoint>[] = [];
+    private messageBus: MessageBus;
 
-    constructor() {
-        this._health = [];
+    constructor(messageBus?: MessageBus) {
+        this.messageBus = messageBus;
     }
 
-    health(e: Entity): Option<Number> {
-        return this._health.length > e ? this._health[e] : new Option();
+    queryHealth(e: Entity): Option<HealthPoint> {
+        return this._health[e] != undefined ? this._health[e] : Option.none();
     }
 
-    setHealth(e: Entity, health: number): void {
-        this._health[e] = this._health[e].map((_) => health);
+    allocateHealth(e: Entity, health: HealthPoint) {
+        this._health[e] = Option.some(health);
+        this.messageBus?.emit(GameEvent.ToLife, e, health);
     }
 
-    damage(e: Entity, damage: number): 'Dead' | 'Alive' {
-        this._health[e] = this._health[e].and_then((health) => {
-            if (health - damage <= 0) {
-                return Option.none();
-            }
-            return Option.some(health - damage);
+    deallocateHealth(e: Entity) {
+        this._health[e] = Option.none();
+        this.messageBus?.emit(GameEvent.ToEternal, e);
+    }
+
+    heal(e: Entity, amount: number) {
+        assert(amount >= 0, 'heal amount should be non-negative');
+        this._health[e] = this._health[e].map((hp) => {
+            hp.health = Math.min(hp.health + amount, hp.maxHealth);
+            return hp;
         });
-        return this._health[e].isNone ? 'Dead' : 'Alive';
+        this.messageBus?.emit(GameEvent.Heal, e, amount);
+    }
+
+    hurt(e: Entity, amount: number) {
+        assert(amount >= 0, 'hurt amount should be non-negative');
+        this._health[e] = this._health[e].map((hp) => {
+            hp.health = Math.max(hp.health - amount, 0);
+            return hp;
+        });
+        this.messageBus?.emit(GameEvent.Damage, e, amount);
     }
 }
