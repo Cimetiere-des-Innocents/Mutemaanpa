@@ -1,0 +1,6 @@
+[book]
+authors = ["hortensia"]
+language = "en"
+multilingual = true
+src = "src"
+title = "Mutemaanpa Book for Developers"
