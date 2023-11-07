@@ -22,3 +22,4 @@
 
 - [宗教](./zh-cn/religion.md)
 
+- [职业](./zh-cn/class.md)
