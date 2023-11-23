@@ -4,6 +4,6 @@
   },
   "scripts": {
     "prepare": "husky install && cd hooks && npm install && npm run build && node ./dist/post-merge.js",
-    "doc": "mdbook build docs/mutemaanpa-dev-book && mdbook build docs/mutemaanpa-background-book && mdbook build docs/mutemaanpa-story-book"
+    "doc": "mdbook build mutemaanpa-dev-book && mdbook build mutemaanpa-background-book && mdbook build mutemaanpa-story-book"
   }
 }

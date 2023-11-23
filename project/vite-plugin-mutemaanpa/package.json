@@ -1,8 +1,0 @@
-{
-    "scripts": {
-        "build": "tsc --build"
-    },
-    "type": "module",
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts"
-}
