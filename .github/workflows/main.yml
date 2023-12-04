@@ -7,6 +7,7 @@ jobs:
   deploy:
     name: deploy books
     runs-on: ubuntu-latest
+    permissions: write-all
     steps:
       - uses: actions/checkout@v4.1.1
       - uses: extractions/setup-mdbook@v1
