@@ -18,5 +18,7 @@ jobs:
           mdbook build mutemaanpa-dev-book
           mdbook build mutemaanpa-background-book
           mdbook build mutemaanpa-story-book
-          git push https://${{ secrets.ACCESS_TOKEN }}@github.com/${{ github.repository }}.git pages
-      
+      - uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.ACCESS_TOKEN }}
+          branch: pages
