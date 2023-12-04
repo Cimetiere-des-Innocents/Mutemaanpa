@@ -1,0 +1,22 @@
+on:
+  push:
+    branches:
+      - book
+
+jobs:
+  deploy:
+    name: deploy books
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.1
+      - uses: extractions/setup-mdbook@v1
+      - run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git checkout -b pages
+          git merge --no-ff origin/book
+          mdbook build mutemaanpa-dev-book
+          mdbook build mutemaanpa-background-book
+          mdbook build mutemaanpa-story-book
+          git push origin pages
+      
