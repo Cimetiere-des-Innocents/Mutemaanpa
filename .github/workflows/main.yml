@@ -17,22 +17,15 @@ jobs:
           git checkout -b pages
           git merge --no-ff origin/book
 
-          git rm -r --cached mutemaanpa-dev-book/book
-          rm -rf mutemaanpa-dev-book/book
-
-          git rm -r --cached mutemaanpa-background-book/book
-          rm -rf mutemaanpa-background-book/book
-
-          git rm -r --cached mutemaanpa-story-book/book
-          rm -rf mutemaanpa-story-book/book
-
-          rm mutemaanpa-dev-book/.gitignore
-          rm mutemaanpa-background-book/.gitignore
-          rm mutemaanpa-story-book/.gitignore
-
           mdbook build mutemaanpa-dev-book
           mdbook build mutemaanpa-background-book
           mdbook build mutemaanpa-story-book
+
+          mv mutemaanpa-dev-book/book books/dev
+          mv mutemaanpa-background-book/book books/background
+          mv mutemaanpa-story-book/book books/story
+
+          find . -maxdepth 1 ! \( -name 'book' -o -name 'index.html' \) -exec rm -r {} +
 
           git add .
           git commit -m "Generate pages"
