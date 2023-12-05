@@ -32,6 +32,8 @@ jobs:
           find . -mindepth 1 -maxdepth 1 ! \( -name 'books' -o -name 'index.html' -o -name '.git' \) -exec rm -r {} +
           echo 'mutemaanpa.cimetieredesinnocents.xyz' > CNAME
 
+          git checkout -B pages
+
           git add .
           git commit -m "Generate Pages"
 
