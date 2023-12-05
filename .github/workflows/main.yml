@@ -9,17 +9,21 @@ jobs:
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
-      - uses: actions/checkout@v4.1.1
-      - uses: extractions/setup-mdbook@v1
-      - run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git checkout -b pages
-          git merge --no-ff origin/book
-
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+        with:
+          ref: book
+      - name: Setup MDBook
+        uses: extractions/setup-mdbook@v1
+      - name: Build MDBook
+        run: |
           mdbook build mutemaanpa-dev-book
           mdbook build mutemaanpa-background-book
           mdbook build mutemaanpa-story-book
+      - name: Commit Static Pages
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
 
           mv mutemaanpa-dev-book/book books/dev
           mv mutemaanpa-background-book/book books/background
@@ -28,10 +32,10 @@ jobs:
           find . -mindepth 1 -maxdepth 1 ! \( -name 'books' -o -name 'index.html' -o -name '.git' \) -exec rm -r {} +
           echo 'mutemaanpa.cimetieredesinnocents.xyz' > CNAME
 
-          last_commit=$(git log -1 --pretty=format:"%H")
-          git reset HEAD^ --hard
+          git checkout -B pages
+
           git add .
-          git commit --amend -C $last_commit
+          git commit -m "Generate Pages"
 
       - uses: ad-m/github-push-action@master
         with:
