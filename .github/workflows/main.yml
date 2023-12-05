@@ -25,7 +25,7 @@ jobs:
           mv mutemaanpa-background-book/book books/background
           mv mutemaanpa-story-book/book books/story
 
-          find . -mindepth 1 -maxdepth 1 ! \( -name 'books' -o -name 'index.html' \) -exec rm -r {} +
+          find . -mindepth 1 -maxdepth 1 ! \( -name 'books' -o -name 'index.html' -o -name '.git' \) -exec rm -r {} +
 
           git add .
           git commit -m "Generate pages"
