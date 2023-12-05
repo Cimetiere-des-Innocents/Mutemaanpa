@@ -1,9 +1,0 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-cd $(dirname -- "$0")/../hooks
-node ./dist/auto-build.js commit
-node ./dist/pre-commit.js
-
-cd ..
-git add .vscode/dict.json

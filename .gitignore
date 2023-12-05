@@ -1,6 +1,0 @@
-/.vscode/*
-!/.vscode/dict.json
-!/.vscode/extensions.json
-node_modules
-package-lock.json
-/local
