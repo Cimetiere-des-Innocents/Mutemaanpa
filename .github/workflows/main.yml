@@ -17,6 +17,9 @@ jobs:
           git checkout -b pages
           git merge --no-ff origin/book
 
+          last_commit=$(git log -1 --pretty=format:"%H")
+          git reset HEAD~1 --hard
+
           mdbook build mutemaanpa-dev-book
           mdbook build mutemaanpa-background-book
           mdbook build mutemaanpa-story-book
@@ -28,8 +31,6 @@ jobs:
           find . -mindepth 1 -maxdepth 1 ! \( -name 'books' -o -name 'index.html' -o -name '.git' \) -exec rm -r {} +
           echo 'mutemaanpa.cimetieredesinnocents.xyz' > CNAME
 
-          last_commit=$(git log -1 --pretty=format:"%H")
-          git reset HEAD~1 --hard
           git add .
           git commit --amend -C $last_commit
 
