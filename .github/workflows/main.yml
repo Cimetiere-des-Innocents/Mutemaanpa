@@ -26,9 +26,13 @@ jobs:
           mv mutemaanpa-story-book/book books/story
 
           find . -mindepth 1 -maxdepth 1 ! \( -name 'books' -o -name 'index.html' -o -name '.git' \) -exec rm -r {} +
+          echo 'mutemaanpa.cimetieredesinnocents.xyz' > CNAME
 
+          last_commit=$(git log -1 --pretty=format:"%H")
+          git reset HEAD^ --hard
           git add .
-          git commit -m "Generate pages"
+          git commit --amend -C $last_commit
+
       - uses: ad-m/github-push-action@master
         with:
           github_token: ${{ github.token }}
